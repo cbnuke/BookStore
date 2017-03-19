@@ -13,6 +13,7 @@ class Stat extends CI_Controller {
     public function index() {
         $data = array(
             'selltoday_list' => $this->stat->sellToDay(),
+            'counttoday' => $this->stat->countToDay(),
         );
         $this->load->view('header');
         $this->load->view('stat/main', $data);

@@ -19,6 +19,19 @@ class Sell_model extends CI_Model {
     }
 
     public function insertData() {
+        //Update members point
+        $this->load->model('books_model', 'books');
+        $this->load->model('members_model', 'members');
+        $books_info = $this->books->getData($this->id_books);
+        $member_info = $this->members->getData($this->id_members);
+        $this->members->id_members = $member_info['id_members'];
+        $this->members->members_name = $member_info['members_name'];
+        $this->members->members_phone = $member_info['members_phone'];
+        $this->members->members_point = $member_info['members_point'] + $books_info['books_point'];
+        $this->members->create_date = $member_info['create_date'];
+        $this->members->updateData($member_info['id_members']);
+
+        //Insert to sell
         $this->create_date = standard_date('DATE_W3C', time());
         return $this->db->insert('sell', $this);
     }

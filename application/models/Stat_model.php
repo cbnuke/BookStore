@@ -18,4 +18,13 @@ class Stat_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function countToDay() {
+        $this->db->select('SUM(books.books_sell_price) AS total_sell'
+                . ',SUM(sell.discount) AS total_dis');
+        $this->db->from('sell');
+        $this->db->join('books', 'books.id_books=sell.id_books');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
 }

@@ -56,11 +56,13 @@
         <div class="panel panel-info">
             <div class="panel-heading clearfix">
                 <h3 class="panel-title pull-left" style="padding-top: 7px;">
-                    รายการขายย้อนหลัง 7 วัน
+                    รายการขายย้อนหลัง
                 </h3>
             </div>
             <div class="panel-body">
-
+                ขายทั้งหมด <?php echo $counttoday[0]['total_sell'] ?><br>
+                ลดทั้งหมด <?php echo $counttoday[0]['total_dis'] ?><br>
+                สรุป <?php echo $counttoday[0]['total_sell'] - $counttoday[0]['total_dis'] ?><br>
             </div>
         </div>
     </div>
