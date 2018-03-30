@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Type;
 use App\Book;
+use App\Type;
 
-class TypeController extends Controller
+class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,9 @@ class TypeController extends Controller
     public function index()
     {
         $datas = [
-            'types'=> Type::all(),
+            'books'=> Book::all(),
         ];
-        return view('types/index',$datas);
+        return view('books/index',$datas);
     }
 
     /**
@@ -28,7 +28,10 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('types/create');
+        $datas = [
+            'types' => Type::all(),
+        ];
+        return view('books/create',$datas);
     }
 
     /**
@@ -40,11 +43,17 @@ class TypeController extends Controller
     public function store(Request $request)
     {
         $datas = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'des' => '',
+            'types_id' => 'required',
+            'import_price' => 'required',
+            'sell_price' => 'required',
+            'point' => 'required',
+            'img' => ''
         ]);
-        $type = new Type($datas);
-        $type->save();
-        return redirect()->route('types.index');
+        $book = new Book($datas);
+        $book->save();
+        return redirect()->route('books.index');
     }
 
     /**
@@ -56,9 +65,10 @@ class TypeController extends Controller
     public function show($id)
     {
         $datas = [
-            'type' => Type::where('id',$id)->first()
+            'book' => Book::where('id',$id)->first(),            
+            'types' => Type::all(),
         ];
-        return view('types/show',$datas);
+        return view('books/show',$datas);
     }
 
     /**
@@ -69,7 +79,7 @@ class TypeController extends Controller
      */
     public function edit($id)
     {
-       //
+        //
     }
 
     /**
@@ -82,11 +92,17 @@ class TypeController extends Controller
     public function update(Request $request, $id)
     {
         $datas = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'des' => '',
+            'types_id' => 'required',
+            'import_price' => 'required',
+            'sell_price' => 'required',
+            'point' => 'required',
+            'img' => ''
         ]);
-        $type =Type::where('id',$id)->first();
-        $type->update($datas);
-        return redirect()->route('types.index');
+        $book = Book::where('id',$id)->first();
+        $book->update($datas);
+        return redirect()->route('books.index');
     }
 
     /**
@@ -97,9 +113,9 @@ class TypeController extends Controller
      */
     public function destroy($id)
     {
-        $type = Type::where('id',$id)->first();
+        $book = Book::where('id',$id)->first();
         try {
-            $type->delete();
+            $book->delete();
           }
         catch (\Exception $e) {
              

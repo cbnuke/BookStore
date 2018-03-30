@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Type;
+use App\Sell;
+use App\Member;
 use App\Book;
 
-class TypeController extends Controller
+class SellController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +17,9 @@ class TypeController extends Controller
     public function index()
     {
         $datas = [
-            'types'=> Type::all(),
+            'sells'=> Sell::all(),
         ];
-        return view('types/index',$datas);
+        return view('sells/index',$datas);
     }
 
     /**
@@ -28,7 +29,11 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('types/create');
+        $datas = [
+            'members' => Member::all(),
+            'books' => Book::all(),
+        ];
+        return view('sells/create',$datas);
     }
 
     /**
@@ -40,11 +45,18 @@ class TypeController extends Controller
     public function store(Request $request)
     {
         $datas = $request->validate([
-            'name' => 'required'
+            'members_id' => 'required',
+            'books_id' => 'required',
+            'discount' => 'required'
         ]);
-        $type = new Type($datas);
-        $type->save();
-        return redirect()->route('types.index');
+        $sell = new Sell($datas);
+        $sell->save();
+        //Update member point
+        $book = Book::where('id',$datas['books_id'])->first();
+        $member = Member::where('id',$datas['members_id'])->first();
+        $member->point  += $book->point;
+        $member->save();
+        return redirect()->route('sells.index');
     }
 
     /**
@@ -55,10 +67,7 @@ class TypeController extends Controller
      */
     public function show($id)
     {
-        $datas = [
-            'type' => Type::where('id',$id)->first()
-        ];
-        return view('types/show',$datas);
+        //
     }
 
     /**
@@ -69,7 +78,7 @@ class TypeController extends Controller
      */
     public function edit($id)
     {
-       //
+        //
     }
 
     /**
@@ -81,12 +90,7 @@ class TypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $datas = $request->validate([
-            'name' => 'required'
-        ]);
-        $type =Type::where('id',$id)->first();
-        $type->update($datas);
-        return redirect()->route('types.index');
+        //
     }
 
     /**
@@ -97,9 +101,17 @@ class TypeController extends Controller
      */
     public function destroy($id)
     {
-        $type = Type::where('id',$id)->first();
+        $sell = Sell::where('id',$id)->first();
+
+        //Update member point 1
+        $book = Book::where('id',$sell->books_id)->first();
+        $member = Member::where('id',$sell->members_id)->first();
+        
         try {
-            $type->delete();
+            $sell->delete();
+            //Update member point 2
+            $member->point  -= $book->point;
+            $member->save();
           }
         catch (\Exception $e) {
              

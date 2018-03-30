@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Type;
-use App\Book;
+use App\Member;
 
-class TypeController extends Controller
+class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +15,9 @@ class TypeController extends Controller
     public function index()
     {
         $datas = [
-            'types'=> Type::all(),
+            'members'=> Member::all(),
         ];
-        return view('types/index',$datas);
+        return view('members/index',$datas);
     }
 
     /**
@@ -28,7 +27,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('types/create');
+        return view('members/create');
     }
 
     /**
@@ -40,11 +39,13 @@ class TypeController extends Controller
     public function store(Request $request)
     {
         $datas = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'phone' => 'required',
+            'point' => 'required',
         ]);
-        $type = new Type($datas);
-        $type->save();
-        return redirect()->route('types.index');
+        $member = new Member($datas);
+        $member->save();
+        return redirect()->route('members.index');
     }
 
     /**
@@ -56,9 +57,10 @@ class TypeController extends Controller
     public function show($id)
     {
         $datas = [
-            'type' => Type::where('id',$id)->first()
+            'member' => Member::where('id',$id)->first(),
+            // 'books' => Book::where('types_id',$id)->get(),
         ];
-        return view('types/show',$datas);
+        return view('members/show',$datas);
     }
 
     /**
@@ -69,7 +71,7 @@ class TypeController extends Controller
      */
     public function edit($id)
     {
-       //
+        //
     }
 
     /**
@@ -82,11 +84,13 @@ class TypeController extends Controller
     public function update(Request $request, $id)
     {
         $datas = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'phone' => 'required',
+            'point' => 'required',
         ]);
-        $type =Type::where('id',$id)->first();
-        $type->update($datas);
-        return redirect()->route('types.index');
+        $member =Member::where('id',$id)->first();
+        $member->update($datas);
+        return redirect()->route('members.index');
     }
 
     /**
@@ -97,9 +101,9 @@ class TypeController extends Controller
      */
     public function destroy($id)
     {
-        $type = Type::where('id',$id)->first();
+        $member = Member::where('id',$id)->first();
         try {
-            $type->delete();
+            $member->delete();
           }
         catch (\Exception $e) {
              
